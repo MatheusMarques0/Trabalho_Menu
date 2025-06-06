@@ -1,0 +1,5 @@
+100;Pepsi;8
+101;coxinha;5
+102;sorvete;4
+103;pastel;10
+104;hot-dog;9

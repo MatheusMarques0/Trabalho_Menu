@@ -46,18 +46,17 @@ def menuADM():
     return optionAdm
  
 def CadastrarADM():
- 
     temp.clear()
     temp_cod.clear()
    
     print("\nA opção desejada foi de cadastrar no modo ADM")
     codigo = 0
-    arquivo = open("cadastroADM.txt", 'r', encoding='utf-8')
+    arquivo = open("cadastroADM.txt", 'a+', encoding='utf-8')
+    arquivo.seek(0) #movendo o cursor para o ínicio do arquivo, sem ele, o código ficará sempre dando 100, pois está lendo o final do arquivo
     dados = arquivo.readlines()
  
     if dados == []:
         codigo = 100
-        print("teste")
         arquivo.close()
     else:
         for i in range(len(dados)):
@@ -92,7 +91,7 @@ def CadastrarADM():
  
     arquivo = open("cadastroADM.txt", 'a+', encoding='utf-8')
     if dados == []:
-        arquivo.write(f"{codigo}" + ";" + description + ";" + price)
+        arquivo.write(f"{codigo}" + ";" + description + ";" + price + "\n")
         arquivo.close()
     else:
         dados.append([codigo, description, price])
@@ -187,6 +186,16 @@ def ExcluirADM():
  
  
 def operator():
+    arquivo = open("cadastroADM.txt", 'r', encoding='utf-8')
+    produtos = arquivo.readlines()
+    arquivo.close()
+    if produtos == []:
+        print("[ERRO] ainda não uma lista feita!")  # verificando se o cadastroADM está vazio
+        return #se for verdadeiro, volte ao menu
+
+    arquivo = open("pedidos.txt", "w", encoding="utf-8") #toda vez que a função for chamada, ela deve resetar o pedido.txt, pois sua ideia é ser um boleto temporário
+    arquivo.close()
+
     totalprice.clear() # se ele for em cancelar novas requições, quer dizer que ele não que mais comprar, por isso resetará essa lista
     choise = 1
  
@@ -222,20 +231,13 @@ def operator():
  
         if conf == "1":
             print("Pedido Enviado com sucesso!")
-            lista_pedido.append([name, lista_produto[codigo_choosed][0], lista_produto[codigo_choosed][1], lista_produto[codigo_choosed][2], f"{despesa}"])
+            lista_pedido.append([name, lista_produto[codigo_choosed][0], lista_produto[codigo_choosed][1], lista_produto[codigo_choosed][2], f"{quantidade}", f"{despesa}"])
             totalprice.append(despesa)
  
             arquivo = open("pedidos.txt", 'a+',  encoding='utf-8')
-            dados = arquivo.readlines()
  
-            if dados == []:
-                arquivo.write((lista_pedido[0][0]) + ": " + (lista_pedido[0][1]) + " " + (lista_pedido[0][2]) + " " + (lista_pedido[0][3]) + " " + (lista_pedido[0][4]) + "\n")
-                arquivo.close()
-            else:
-                for i in range(len(dados)):
-                    arquivo.write((lista_pedido[0][0]) + ": " + (lista_pedido[0][1]) + " " + (lista_pedido[0][2]) + " " + (lista_pedido[0][3]) + " " + (lista_pedido[0][4]) + "\n")
-                arquivo.close()
- 
+            arquivo.write((lista_pedido[0][0]) + ": " + (lista_pedido[0][1]) + " " + (lista_pedido[0][2]) + " " + (lista_pedido[0][3]) + " " + (lista_pedido[0][4]) + " " + (lista_pedido[0][5]) + "\n")
+            arquivo.close()
  
         else:
             print("Pedido cancelado!")
